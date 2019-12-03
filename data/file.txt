@@ -1,0 +1,14 @@
+cash123
+cash33
+asdah123
+cash113
+15 false 6 cash33
+22 true 6 cash33
+66 false 33 cash123
+22 true 33 cash123
+22 false 33 cash15
+100 false 10 cash113
+100 false 10 cash113
+100 true 10 cash113
+100 false 10 cash113
+100 true 10 cash113
