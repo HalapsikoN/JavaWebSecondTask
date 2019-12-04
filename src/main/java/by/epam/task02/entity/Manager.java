@@ -31,22 +31,17 @@ public class Manager {
                 logger.warn(e.getMessage() + " problem is "+ e.getClass().getSimpleName());
             }
         }
-        Map<String, ArrayDeque<Client>> mapQueue = new HashMap<>();
-
-        for (CashDesk cashDesk : cashDeskList) {
-            mapQueue.put(cashDesk.getId(), new ArrayDeque<>());
-        }
 
         for (Client client : clientList) {
             CashDesk clientCashDesk=client.getCashDesk();
             if(clientCashDesk==null){
                 continue;
             }
-            ArrayDeque<Client> queue = mapQueue.get(clientCashDesk.getId());
+
             if (client.getOrder().isPreOrder()) {
-                queue.addFirst(client);
+                clientCashDesk.addFirst(client);
             } else {
-                queue.addLast(client);
+                clientCashDesk.addLast(client);
             }
         }
 
@@ -58,7 +53,7 @@ public class Manager {
 
         for (CashDesk cashDesk : cashDeskList) {
             ExecutorService ex = mapThreads.get(cashDesk.getId());
-            ArrayDeque<Client> deque = mapQueue.get(cashDesk.getId());
+            ArrayDeque<Client> deque = cashDesk.getArrayDeque();
             for (Client client : deque) {
                 ex.execute(client);
             }

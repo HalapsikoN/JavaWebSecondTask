@@ -4,6 +4,7 @@ import com.google.common.util.concurrent.AtomicDouble;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayDeque;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.locks.Lock;
@@ -16,17 +17,48 @@ public class CashDesk {
     private String id = UUID.randomUUID().toString();
     private String name;
     private AtomicDouble revenue = new AtomicDouble(0);
+    private ArrayDeque<Client> arrayDeque;
 
     public CashDesk(String name) {
-        lock.lock();
         this.name = name;
+        this.arrayDeque=new ArrayDeque<>();
+    }
+
+    public void setArrayDeque(ArrayDeque<Client> arrayDeque){
+        lock.lock();
+        this.arrayDeque=arrayDeque;
         lock.unlock();
     }
 
-    public void depositAmount(Double amount) {
+    public ArrayDeque<Client> getArrayDeque() {
+        return arrayDeque;
+    }
+
+    public void addFirst(Client client){
         lock.lock();
-        this.revenue.addAndGet(amount);
+        arrayDeque.addFirst(client);
         lock.unlock();
+    }
+
+    public void addLast(Client client){
+        lock.lock();
+        arrayDeque.addLast(client);
+        lock.unlock();
+    }
+
+    public Client peek(){
+        return arrayDeque.peekFirst();
+    }
+
+    public Client poll(){
+        lock.lock();
+        Client client = arrayDeque.pollFirst();
+        lock.unlock();
+        return client;
+    }
+
+    public void depositAmount(Double amount) {
+        this.revenue.addAndGet(amount);
     }
 
     public Double closeCashDesk() {
@@ -43,10 +75,6 @@ public class CashDesk {
 
     public AtomicDouble getRevenue() {
         return revenue;
-    }
-
-    public Lock getLock() {
-        return lock;
     }
 
     @Override
