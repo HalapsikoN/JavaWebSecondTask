@@ -4,7 +4,6 @@ import com.google.common.util.concurrent.AtomicDouble;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Deque;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.locks.Lock;
@@ -19,12 +18,6 @@ public class CashDesk {
     private AtomicDouble revenue = new AtomicDouble(0);
 
     public CashDesk(String name) {
-        lock.lock();
-        this.name = name;
-        lock.unlock();
-    }
-
-    public CashDesk(String name, Deque<Client> queue) {
         lock.lock();
         this.name = name;
         lock.unlock();
