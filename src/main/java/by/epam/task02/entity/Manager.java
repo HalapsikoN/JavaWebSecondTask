@@ -4,7 +4,6 @@ import by.epam.task02.exception.NoSuchCashDeckException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,16 +27,15 @@ public class Manager {
             try {
                 client.findCashDesk(cashDeskList);
             } catch (NoSuchCashDeckException e) {
-                logger.warn(e.getMessage() + " problem is "+ e.getClass().getSimpleName());
+                logger.warn(e.getMessage() + " problem is " + e.getClass().getSimpleName());
             }
         }
 
         for (Client client : clientList) {
-            CashDesk clientCashDesk=client.getCashDesk();
-            if(clientCashDesk==null){
+            CashDesk clientCashDesk = client.getCashDesk();
+            if (clientCashDesk == null) {
                 continue;
             }
-
             if (client.getOrder().isPreOrder()) {
                 clientCashDesk.addFirst(client);
             } else {
@@ -53,11 +51,10 @@ public class Manager {
 
         for (CashDesk cashDesk : cashDeskList) {
             ExecutorService ex = mapThreads.get(cashDesk.getId());
-            ArrayDeque<Client> deque = cashDesk.getArrayDeque();
-            for (Client client : deque) {
+            while (cashDesk.peek() != null) {
+                Client client = cashDesk.poll();
                 ex.execute(client);
             }
-            deque.clear();
         }
 
         for (CashDesk cashDesk : cashDeskList) {

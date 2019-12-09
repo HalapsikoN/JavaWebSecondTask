@@ -17,42 +17,32 @@ public class CashDesk {
     private String id = UUID.randomUUID().toString();
     private String name;
     private AtomicDouble revenue = new AtomicDouble(0);
-    private ArrayDeque<Client> arrayDeque;
+    private ArrayDeque<Client> clientQueue;
 
     public CashDesk(String name) {
         this.name = name;
-        this.arrayDeque=new ArrayDeque<>();
+        this.clientQueue = new ArrayDeque<>();
     }
 
-    public void setArrayDeque(ArrayDeque<Client> arrayDeque){
+    public void addFirst(Client client) {
         lock.lock();
-        this.arrayDeque=arrayDeque;
+        clientQueue.addFirst(client);
         lock.unlock();
     }
 
-    public ArrayDeque<Client> getArrayDeque() {
-        return arrayDeque;
-    }
-
-    public void addFirst(Client client){
+    public void addLast(Client client) {
         lock.lock();
-        arrayDeque.addFirst(client);
+        clientQueue.addLast(client);
         lock.unlock();
     }
 
-    public void addLast(Client client){
-        lock.lock();
-        arrayDeque.addLast(client);
-        lock.unlock();
+    public Client peek() {
+        return clientQueue.peekFirst();
     }
 
-    public Client peek(){
-        return arrayDeque.peekFirst();
-    }
-
-    public Client poll(){
+    public Client poll() {
         lock.lock();
-        Client client = arrayDeque.pollFirst();
+        Client client = clientQueue.pollFirst();
         lock.unlock();
         return client;
     }
